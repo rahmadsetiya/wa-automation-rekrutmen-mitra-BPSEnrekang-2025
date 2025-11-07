@@ -1,8 +1,10 @@
+# Sistem Automasi Penjawab Pertanyaan Calon Mitra BPS Kabupaten Enrekang
+
+Automation ini dijalankan pada server lokal karna tidak menggunakan API WhatsApp
+Diperlukan komputer yang menyala 24 jam dan credit OpenAI yang cukup untuk menjalankan sistem ini
+
 contoh `.env`
 
 ```
 OPENAI_API_KEY=sk-xxxxx
-WHATSAPP_TOKEN=EAxxxx
-PHONE_NUMBER_ID=1234567890
-VERIFY_TOKEN=my_secret_token
 ```
