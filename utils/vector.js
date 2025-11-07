@@ -7,7 +7,6 @@ let vectorStore = null;
 
 /**
  * Muat knowledge base dari file teks lokal.
- * Format file: setiap topik dipisahkan dengan 1–2 baris kosong.
  */
 export async function loadKnowledgeBase() {
   const path = "./data/knowledge.txt";
@@ -44,45 +43,51 @@ export async function getAnswerFromKnowledgeBase(question) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const retriever = vectorStore.asRetriever({ k: 3 });
-
-    // Deteksi dini apakah pertanyaan di luar konteks rekrutmen BPS Enrekang
-    const lowerQuestion = question.toLowerCase();
+    // 🔍 Deteksi apakah pertanyaan relevan dengan topik rekrutmen mitra
+    const lowerQ = question.toLowerCase();
     const relatedKeywords = [
       "mitra",
-      "rekrut",
       "bps",
+      "rekrut",
       "pendaftaran",
-      "enrekang",
-      "petugas",
-      "pengumuman",
+      "sobat",
+      "akun",
+      "registrasi",
+      "tes",
       "seleksi",
-      "berkas",
+      "administrasi",
+      "kompetensi",
+      "pengumuman",
+      "pakta",
+      "integritas",
       "dokumen",
-      "syarat",
-      "jadwal",
+      "berkas",
+      "data diri",
+      "petugas",
+      "enrekang"
     ];
 
-    const isRelevant = relatedKeywords.some((word) => lowerQuestion.includes(word));
+    const isRelevant = relatedKeywords.some((kw) => lowerQ.includes(kw));
 
-    // ❌ Jika pertanyaan sama sekali tidak relevan
     if (!isRelevant) {
-      return "Sistem ini hanya melayani pertanyaan seputar rekrutmen mitra BPS Kabupaten Enrekang tahun 2026. Untuk pertanyaan lain, silakan hubungi admin BPS Kabupaten Enrekang. 🙏";
+      // ❌ Pertanyaan umum di luar konteks
+      return "Pertanyaan tersebut bukan pertanyaan terkait rekrutmen mitra BPS Kabupaten Enrekang. 🙏";
     }
 
-    // ✅ Kalau masih relevan, lanjutkan dengan chain LangChain
+    // ✅ Pertanyaan relevan → lanjutkan dengan knowledge base
+    const retriever = vectorStore.asRetriever({ k: 3 });
     const chain = RetrievalQAChain.fromLLM(llm, retriever, {
       promptTemplate: `
 Anda adalah ADIMAS, asisten virtual resmi Badan Pusat Statistik (BPS) Kabupaten Enrekang.
 
-Tugas Anda adalah:
-- Menjawab pertanyaan hanya jika berkaitan dengan rekrutmen mitra BPS Kabupaten Enrekang tahun 2026.
+🎯 Tugas utama Anda:
+- Menjawab pertanyaan **hanya jika berkaitan dengan rekrutmen mitra BPS Kabupaten Enrekang tahun 2026**.
 - Semua jawaban harus berdasarkan knowledge base di bawah ini.
-- Jika informasi tidak ditemukan dalam knowledge base, jangan mencoba menebak.
-- Dalam kasus seperti itu, jawab persis dengan:
+- Jika pengguna menanyakan hal di luar konteks rekrutmen mitra BPS Enrekang 2026 (misalnya sensus, data statistik, atau pertanyaan umum), jawab persis:
+  "Pertanyaan tersebut bukan pertanyaan terkait rekrutmen mitra BPS Kabupaten Enrekang. 🙏"
+- Jika pertanyaan masih relevan tapi tidak ditemukan di knowledge base, jawab:
   "Pertanyaan tersebut akan diteruskan kepada admin BPS Kabupaten Enrekang. Mohon tunggu balasan selanjutnya. 🙏"
-
-Gunakan bahasa sopan, profesional, dan singkat.
+Gunakan bahasa profesional, sopan, dan singkat.
 
 ---
 📚 Knowledge Base:
@@ -99,7 +104,7 @@ Gunakan bahasa sopan, profesional, dan singkat.
     let answer = response.text?.trim();
     const lower = (answer || "").toLowerCase();
 
-    // 🔍 Fallback jika model tetap menghasilkan jawaban tidak relevan
+    // 🔁 Jika model tetap tidak menemukan atau jawab tidak jelas
     if (
       !answer ||
       lower.includes("tidak tahu") ||
