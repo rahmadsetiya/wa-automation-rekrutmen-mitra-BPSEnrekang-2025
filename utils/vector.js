@@ -64,7 +64,9 @@ export async function getAnswerFromKnowledgeBase(question) {
       "berkas",
       "data diri",
       "petugas",
-      "enrekang"
+      "enrekang",
+      "daftar",
+      "mendaftar"
     ];
 
     const isRelevant = relatedKeywords.some((kw) => lowerQ.includes(kw));
