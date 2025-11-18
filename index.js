@@ -36,7 +36,23 @@ client.on("message", async (message) => {
   if (!text) return;
 
   // Daftar kata kunci yang menandakan pertanyaan
-  const kw = ["bertanya", "tanya", "nanya", "bagaimana", "apa", "siapa", "dimana", "kapan", "kenapa", "bagaimana", "\\?"];
+  const kw = [
+    "bertanya",
+    "tanya",
+    "nanya",
+    "bagaimana",
+    "apa",
+    "siapa",
+    "dimana",
+    "kapan",
+    "kenapa",
+    "bagaimana",
+    "kah",
+    "gimana",
+    "berapa",
+    "bisakah",
+    "bolehkah"
+  ];
 
   // Daftar kata yang menandakan ucapan sopan atau bukan pertanyaan
   const nonQuestionPatterns = ["terima kasih", "makasih", "ok", "sip", "siap", "mantap", "👍", "🙏", "Terimakasih"];
@@ -45,7 +61,7 @@ client.on("message", async (message) => {
   if (nonQuestionPatterns.some((p) => text.includes(p))) return;
 
   // Proses hanya jika mengandung salah satu keyword bertanya
-  if (kw.some((k) => text.includes(k))) {
+  if (kw.some((k) => text.includes(k) || text.includes("?"))) {
     const question = kw.reduce(
       (acc, k) => acc.replace(new RegExp(k, "gi"), ""),
       text
