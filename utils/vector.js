@@ -82,7 +82,11 @@ export async function getAnswerFromKnowledgeBase(question) {
       "jadwal",
       "login",
       "cara",
-      "rekruitmen"
+      "rekruitmen",
+      "ujian",
+      "sesi",
+      "mengerjakan",
+      "kerja",
     ];
 
     const isRelevant = relatedKeywords.some((kw) => lowerQ.includes(kw));
@@ -106,11 +110,8 @@ Gunakan informasi waktu ini untuk menjawab pertanyaan yang berkaitan dengan tang
 - Jawab **hanya pertanyaan seputar rekrutmen mitra BPS Kabupaten Enrekang tahun 2026**.
 - Semua jawaban berdasarkan knowledge base di bawah.
 - Jika pengguna menanyakan waktu atau tanggal (misalnya "sudah dimulai belum", "berapa hari lagi", "kapan dimulai"), gunakan tanggal saat ini (${today}) untuk menghitung atau menilai statusnya.
-- Jika pertanyaan tidak relevan dengan topik rekrutmen, jawab:
-  "Pertanyaan tersebut bukan pertanyaan terkait rekrutmen mitra BPS Kabupaten Enrekang. 🙏"
 - Jika topiknya masih relevan tapi tidak ditemukan di knowledge base, jawab:
   "Pertanyaan tersebut akan diteruskan kepada admin BPS Kabupaten Enrekang. Mohon tunggu balasan selanjutnya. 🙏"
-- Tambahan informasi untuk kamu, sekarang sedang berlangsung tahapan tes kompetensi online bagi calon mitra yang lolos seleksi administrasi, dari tanggal 18 hingga 26 November 2025, jadi jawablah sesuai konteks ini jika relevan. jika ditanya caranya, jelaskan tahapan cara melakukan tes kompetensi online.
 
 Gunakan bahasa sopan, profesional, dan ringkas.
 
